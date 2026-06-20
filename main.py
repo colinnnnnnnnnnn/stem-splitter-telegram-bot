@@ -11,6 +11,8 @@ from telegram.ext import (
     filters,
 )
 
+from download_mp3 import download_mp3
+
 load_dotenv()
 
 # Enable logging
@@ -39,9 +41,20 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     await update.message.reply_text("Help!")
 
 
-async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Echo the user message."""
-    await update.message.reply_text(update.message.text)
+# async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+#     """Echo the user message."""
+#     await update.message.reply_text(update.message.text)
+
+
+async def convert_and_send(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    msg = update.message
+    if not msg or not msg.text:
+        return
+    await msg.chat.send_message("Downloading...")
+    path = download_mp3(msg.text)
+    await msg.chat.send_message("Sending mp3...")
+    with open(path, "rb") as file:
+        await msg.reply_audio(file)
 
 
 def main() -> None:
@@ -57,7 +70,9 @@ def main() -> None:
     application.add_handler(CommandHandler("help", help_command))
 
     # on non command i.e message - echo the message on Telegram
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+    application.add_handler(
+        MessageHandler(filters.TEXT & ~filters.COMMAND, convert_and_send)
+    )
 
     # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)
