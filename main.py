@@ -51,7 +51,7 @@ async def convert_and_send(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     if not msg or not msg.text:
         return
     await msg.chat.send_message("Downloading...")
-    path = download_mp3(msg.text)
+    path, jobid = download_mp3(msg.text)
     await msg.chat.send_message("Sending mp3...")
     with open(path, "rb") as file:
         await msg.reply_audio(file)
