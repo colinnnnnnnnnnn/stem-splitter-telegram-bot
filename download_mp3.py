@@ -6,7 +6,7 @@ from tempfile import TemporaryDirectory
 
 BASE = Path(__file__).resolve().parent
 TMP_PARENT = BASE / "data" / "tmp"
-INPUT_DIR = BASE / "data" / "input"
+INPUT_DIR = BASE / "data" / "incoming"
 TMP_PARENT.mkdir(parents=True, exist_ok=True)
 INPUT_DIR.mkdir(parents=True, exist_ok=True)
 
