@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 @dataclass
-class DownloadResult:
+class SongData:
     jobid: str
     path: Path
     title: str
@@ -19,7 +19,7 @@ DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
 INCOMING_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def download_audio(url: str, jobid: str) -> DownloadResult:
+def download_audio(url: str, jobid: str) -> SongData:
     job_path = DOWNLOAD_DIR / jobid
     try:
         res = subprocess.run(
@@ -41,7 +41,7 @@ def download_audio(url: str, jobid: str) -> DownloadResult:
 
         res_path = Path(res.stdout.strip().splitlines()[-1])
         song_title = res_path.stem
-        return DownloadResult(jobid=jobid, path=res_path, title=song_title)
+        return SongData(jobid=jobid, path=res_path, title=song_title)
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"yt-dlp failed: {e.stderr}")
 
