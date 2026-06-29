@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  bot:
+    build: .
+    env_file: .env
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - demucs
+    restart: unless-stopped
+
+  demucs:
+    image: ghcr.io/facebookresearch/demucs:main
+    volumes:
+      - ./data:/data
+    command: >
+      /bin/sh -c "mkdir -p /data/incoming /data/out /data/done;
+      while true; do
+        for f in /data/incoming/*.mp3; do
+          [ -f \"$f\" ] || continue;
+          echo Processing $f;
+          demucs --out /data/out \"$f\" && mv \"$f\" /data/done/;
+        done;
+        sleep 3;
+      done"
+    restart: unless-stopped
