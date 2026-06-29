@@ -46,3 +46,15 @@ def download_audio(url: str, jobid: str) -> SongData:
         raise RuntimeError(f"yt-dlp failed: {e.stderr}")
 
 
+def enqueue_audio(song_data: SongData) -> Path:
+    incoming_path = INCOMING_DIR / f"{song_data.jobid}.mp3"
+    os.replace(song_data.path, incoming_path)
+    return incoming_path
+
+
+if __name__ == "__main__":
+    url = "https://www.youtube.com/watch?v=qlhahaRSBzw"
+    jobid = uuid.uuid4().hex
+
+    song_data = download_audio(url, jobid)
+    print(enqueue_audio(song_data))
