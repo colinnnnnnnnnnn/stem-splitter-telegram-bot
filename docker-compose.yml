@@ -1,6 +1,6 @@
 services:
   bot:
-    build: .
+    build: ./bot
     env_file: .env
     volumes:
       - ./data/input:/data/input
@@ -11,11 +11,9 @@ services:
     restart: unless-stopped
 
   demucs:
-    image: xserrat/facebook-demucs:latest
+    build: ./demucs
     volumes:
       - ./data/input:/data/input
       - ./data/output:/data/output
       - ./data/done:/data/done
-      - ./demucs-watch.sh:/demucs-watch.sh:ro
-    entrypoint: ["/bin/sh", "/demucs-watch.sh"]
     restart: unless-stopped
