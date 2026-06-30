@@ -14,7 +14,7 @@ class SongData:
 
 BASE = Path(__file__).resolve().parent
 DOWNLOAD_DIR = BASE / "data" / "downloaded"
-INCOMING_DIR = BASE / "data" / "incoming"
+INCOMING_DIR = BASE / "data" / "input"
 DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
 INCOMING_DIR.mkdir(parents=True, exist_ok=True)
 
