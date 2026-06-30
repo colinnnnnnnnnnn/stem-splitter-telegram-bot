@@ -1,26 +1,21 @@
-version: "3.8"
 services:
   bot:
     build: .
     env_file: .env
     volumes:
-      - ./data:/app/data
+      - ./data/input:/data/input
+      - ./data/output:/data/output
+      - ./data/done:/data/done
     depends_on:
       - demucs
     restart: unless-stopped
 
   demucs:
-    image: ghcr.io/facebookresearch/demucs:main
+    image: xserrat/facebook-demucs:latest
     volumes:
-      - ./data:/data
-    command: >
-      /bin/sh -c "mkdir -p /data/incoming /data/out /data/done;
-      while true; do
-        for f in /data/incoming/*.mp3; do
-          [ -f \"$f\" ] || continue;
-          echo Processing $f;
-          demucs --out /data/out \"$f\" && mv \"$f\" /data/done/;
-        done;
-        sleep 3;
-      done"
+      - ./data/input:/data/input
+      - ./data/output:/data/output
+      - ./data/done:/data/done
+      - ./demucs-watch.sh:/demucs-watch.sh:ro
+    entrypoint: ["/bin/sh", "/demucs-watch.sh"]
     restart: unless-stopped
