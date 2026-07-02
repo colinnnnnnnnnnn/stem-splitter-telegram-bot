@@ -1,4 +1,17 @@
 services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: bot
+      POSTGRES_PASSWORD: botpass
+      POSTGRES_DB: jobdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/initsql:ro
+    restart: unless-stopped
+
   bot:
     build: ./bot
     env_file: .env
@@ -17,3 +30,6 @@ services:
       - ./data/output:/data/output
       - ./data/done:/data/done
     restart: unless-stopped
+
+volumes:
+  pgdata:
